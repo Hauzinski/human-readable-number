@@ -1,147 +1,67 @@
-module.exports = function toReadable(number) {
-    let hundred = "";
-    let dozen = "";
-    let unit = "";
-    let num = [];
-    number
-        .toString()
-        .split("")
-        .reverse()
-        .forEach((value, index) =>
-            index == 1
-                ? (dozen = value)
-                : index == 2
-                ? (hundred = value)
-                : (unit = value)
-        );
+module.exports = function toReadable(num) {
+    let unit = {
+        1: "one",
+        2: "two",
+        3: "three",
+        4: "four",
+        5: "five",
+        6: "six",
+        7: "seven",
+        8: "eight",
+        9: "nine",
+    };
 
-    switch (hundred) {
-        case "1":
-            num.push("one hundred");
-            break;
-        case "2":
-            num.push("two hundred");
-            break;
-        case "3":
-            num.push("three hundred");
-            break;
-        case "4":
-            num.push("four hundred");
-            break;
-        case "5":
-            num.push("five hundred");
-            break;
-        case "6":
-            num.push("six hundred");
-            break;
-        case "7":
-            num.push("seven hundred");
-            break;
-        case "8":
-            num.push("eight hundred");
-            break;
-        case "9":
-            num.push("nine hundred");
-            break;
+    let dozen1 = {
+        0: "ten",
+        1: "eleven",
+        2: "twelve",
+        3: "thirteen",
+        4: "fourteen",
+        5: "fifteen",
+        6: "sixteen",
+        7: "seventeen",
+        8: "eighteen",
+        9: "nineteen",
+    };
+
+    let dozen2 = {
+        2: "twenty",
+        3: "thirty",
+        4: "forty",
+        5: "fifty",
+        6: "sixty",
+        7: "seventy",
+        8: "eighty",
+        9: "ninety",
+    };
+
+    let number = [];
+    let arr = num.toString().split("");
+    let numberLength = arr.length;
+
+    if (num === 0) {
+        return "zero";
     }
 
-    switch (dozen) {
-        case "2":
-            num.push("twenty");
-            break;
-        case "3":
-            num.push("thirty");
-            break;
-        case "4":
-            num.push("forty");
-            break;
-        case "5":
-            num.push("fifty");
-            break;
-        case "6":
-            num.push("sixty");
-            break;
-        case "7":
-            num.push("seventy");
-            break;
-        case "8":
-            num.push("eighty");
-            break;
-        case "9":
-            num.push("ninety");
-            break;
-    }
-
-    if (dozen != 1) {
-        switch (unit) {
-            case "1":
-                num.push("one");
-                break;
-            case "2":
-                num.push("two");
-                break;
-            case "3":
-                num.push("three");
-                break;
-            case "4":
-                num.push("four");
-                break;
-            case "5":
-                num.push("five");
-                break;
-            case "6":
-                num.push("six");
-                break;
-            case "7":
-                num.push("seven");
-                break;
-            case "8":
-                num.push("eight");
-                break;
-            case "9":
-                num.push("nine");
-                break;
+    arr.some(function (value, index) {
+        if (numberLength === 3 && index === 0) {
+            // 100
+            number.push(unit[value], "hundred");
+        } else if (
+            (numberLength === 2 && index === 0 && value !== "1") ||
+            (numberLength === 3 && index === 1 && value !== "1")
+        ) {
+            // 10 от 20 до 90
+            number.push(dozen2[value]);
+        } else if (
+            (numberLength === 2 && index === 0 && value === "1") ||
+            (numberLength === 3 && index === 1 && value === "1")
+        ) {
+            // 10 от 10 до 19
+            return number.push(dozen1[arr[index + 1]]);
+        } else {
+            number.push(unit[value]);
         }
-    }
-
-    if (dozen == 1) {
-        switch (dozen + unit) {
-            case "10":
-                num.push("ten");
-                break;
-            case "11":
-                num.push("eleven");
-                break;
-            case "12":
-                num.push("twelve");
-                break;
-            case "13":
-                num.push("thirteen");
-                break;
-            case "14":
-                num.push("fourteen");
-                break;
-            case "15":
-                num.push("fifteen");
-                break;
-            case "16":
-                num.push("sixteen");
-                break;
-            case "17":
-                num.push("seventeen");
-                break;
-            case "18":
-                num.push("eighteen");
-                break;
-            case "19":
-                num.push("nineteen");
-                break;
-        }
-    }
-
-    if (number === 0) {
-        num.push("zero");
-    }
-
-    return num.join(" ");
+    });
+    return number.filter((value) => value !== undefined).join(" ");
 };
