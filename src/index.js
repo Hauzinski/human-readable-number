@@ -37,31 +37,30 @@ module.exports = function toReadable(num) {
 
     let number = [];
     let arr = num.toString().split("");
-    let numberLength = arr.length;
 
     if (num === 0) {
         return "zero";
     }
-
-    arr.some(function (value, index) {
-        if (numberLength === 3 && index === 0) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr.length === 3 && i === 0) {
             // 100
-            number.push(unit[value], "hundred");
+            number.push(unit[arr[i]], "hundred");
         } else if (
-            (numberLength === 2 && index === 0 && value !== "1") ||
-            (numberLength === 3 && index === 1 && value !== "1")
+            (arr.length === 2 && i === 0 && arr[i] !== "1") ||
+            (arr.length === 3 && i === 1 && arr[i] !== "1")
         ) {
             // 10 от 20 до 90
-            number.push(dozen2[value]);
+            number.push(dozen2[arr[i]]);
         } else if (
-            (numberLength === 2 && index === 0 && value === "1") ||
-            (numberLength === 3 && index === 1 && value === "1")
+            (arr.length === 2 && i === 0 && arr[i] === "1") ||
+            (arr.length === 3 && i === 1 && arr[i] === "1")
         ) {
             // 10 от 10 до 19
-            return number.push(dozen1[arr[index + 1]]);
+            number.push(dozen1[arr[i + 1]]);
+            break;
         } else {
-            number.push(unit[value]);
+            number.push(unit[arr[i]]);
         }
-    });
+    }
     return number.filter((value) => value !== undefined).join(" ");
 };
